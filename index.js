@@ -1,6 +1,6 @@
 'use strict';
 
-var _event = require('event');
+var _event = require('./event');
 
 var _event2 = _interopRequireDefault(_event);
 

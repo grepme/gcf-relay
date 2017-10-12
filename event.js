@@ -18,15 +18,14 @@ var Event = function () {
   }
 
   _createClass(Event, [{
-    key: 'isPubSubEvent',
-    value: function isPubSubEvent() {
+    key: 'isPubsubEvent',
+    value: function isPubsubEvent() {
       return this.event['@type'] === GOOGLE_PUBSUB_TYPE;
     }
   }, {
     key: 'isHTTPEvent',
     value: function isHTTPEvent() {
-      // This is just data we don't need to decode, it could come from any event
-      return !this.isPubSubEvent();
+      return this.event.is !== undefined && this.event.is('application/json');
     }
   }, {
     key: 'decodeBase64',
@@ -36,10 +35,10 @@ var Event = function () {
   }, {
     key: 'getPayload',
     value: function getPayload() {
-      if (this.isPubSubEvent()) {
+      if (this.isPubsubEvent()) {
         return this.decodeBase64(this.event.data);
       } else {
-        return this.event;
+        return this.event.body;
       }
     }
   }, {
