@@ -15,8 +15,11 @@ const httpEvent = {
 };
 
 const pubsubEvent = {
-  '@type': 'type.googleapis.com/google.pubsub.v1.PubsubMessage',
-  data: Buffer.from(JSON.stringify(data), 'utf8').toString('base64')
+  data: {
+    data: Buffer.from(JSON.stringify(data), 'utf8').toString('base64'),
+    '@type': 'type.googleapis.com/google.pubsub.v1.PubsubMessage'
+  },
+  eventType: 'providers/cloud.pubsub/eventTypes/topic.publish'
 }
 
 const pubsubEmulatorEvent = {
@@ -42,10 +45,6 @@ describe('pubsub event', () => {
 
   test('is not a HTTPEvent', () => {
     expect(event.isHTTPEvent()).toBeFalsy();
-  })
-
-  test('is not a pubsubEmulatorEvent', () => {
-    expect(event.isPubsubEmulatorEvent()).toBeFalsy();
   })
 
   test('decodes the payload', () => {

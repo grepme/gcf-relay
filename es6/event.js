@@ -1,5 +1,5 @@
-const GOOGLE_PUBSUB_TYPE = 'type.googleapis.com/google.pubsub.v1.PubsubMessage'
-const GOOGLE_PUBSUB_EMULATOR_TYPE = 'providers/cloud.pubsub/eventTypes/topic.publish'
+const GOOGLE_PUBSUB_DATA_TYPE = 'type.googleapis.com/google.pubsub.v1.PubsubMessage'
+const GOOGLE_PUBSUB_TYPE = 'providers/cloud.pubsub/eventTypes/topic.publish'
 
 class InvalidEvent extends Error {}
 
@@ -9,11 +9,11 @@ export default class Event {
   }
 
   isPubsubEvent() {
-    return this.event['@type'] === GOOGLE_PUBSUB_TYPE
+    return this.event.data !== undefined && this.event.data['@type'] === GOOGLE_PUBSUB_DATA_TYPE
   }
 
   isPubsubEmulatorEvent() {
-    return this.event.eventType === GOOGLE_PUBSUB_EMULATOR_TYPE
+    return this.event.eventType === GOOGLE_PUBSUB_TYPE
   }
 
   isHTTPEvent() {
@@ -26,7 +26,7 @@ export default class Event {
 
   getPayload() {
     if (this.isPubsubEvent()) {
-      return this.decodeBase64(this.event.data)
+      return this.decodeBase64(this.event.data.data)
     } else if (this.isHTTPEvent()) {
       return this.event.body
     } else if (this.isPubsubEmulatorEvent()) {
