@@ -1,0 +1,25 @@
+{
+  "name": "gcf-relay",
+  "version": "1.0.0",
+  "description": "BounceBox's GCF Relay Events",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "compile": "babel 'es6' --out-dir '.' --presets=es2015 --copy-files --ignore 'node_modules'"
+  },
+  "author": "@grepme",
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
+    "jest": "^21.2.1",
+    "regenerator-runtime": "^0.11.0",
+    "rimraf": "^2.6.2"
+  }
+}
