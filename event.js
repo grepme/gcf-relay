@@ -12,8 +12,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var GOOGLE_PUBSUB_TYPE = 'type.googleapis.com/google.pubsub.v1.PubsubMessage';
-var GOOGLE_PUBSUB_EMULATOR_TYPE = 'providers/cloud.pubsub/eventTypes/topic.publish';
+var GOOGLE_PUBSUB_DATA_TYPE = 'type.googleapis.com/google.pubsub.v1.PubsubMessage';
+var GOOGLE_PUBSUB_TYPE = 'providers/cloud.pubsub/eventTypes/topic.publish';
 
 var InvalidEvent = function (_Error) {
   _inherits(InvalidEvent, _Error);
@@ -37,12 +37,12 @@ var Event = function () {
   _createClass(Event, [{
     key: 'isPubsubEvent',
     value: function isPubsubEvent() {
-      return this.event['@type'] === GOOGLE_PUBSUB_TYPE;
+      return this.event.data !== undefined && this.event.data['@type'] === GOOGLE_PUBSUB_DATA_TYPE;
     }
   }, {
     key: 'isPubsubEmulatorEvent',
     value: function isPubsubEmulatorEvent() {
-      return this.event.eventType === GOOGLE_PUBSUB_EMULATOR_TYPE;
+      return this.event.eventType === GOOGLE_PUBSUB_TYPE;
     }
   }, {
     key: 'isHTTPEvent',
@@ -58,7 +58,7 @@ var Event = function () {
     key: 'getPayload',
     value: function getPayload() {
       if (this.isPubsubEvent()) {
-        return this.decodeBase64(this.event.data);
+        return this.decodeBase64(this.event.data.data);
       } else if (this.isHTTPEvent()) {
         return this.event.body;
       } else if (this.isPubsubEmulatorEvent()) {
