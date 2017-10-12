@@ -8,7 +8,24 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var GOOGLE_PUBSUB_TYPE = 'googleapis.com/google.pubsub.v1.PubsubMessage';
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var GOOGLE_PUBSUB_TYPE = 'type.googleapis.com/google.pubsub.v1.PubsubMessage';
+var GOOGLE_PUBSUB_EMULATOR_TYPE = 'providers/cloud.pubsub/eventTypes/topic.publish';
+
+var InvalidEvent = function (_Error) {
+  _inherits(InvalidEvent, _Error);
+
+  function InvalidEvent() {
+    _classCallCheck(this, InvalidEvent);
+
+    return _possibleConstructorReturn(this, (InvalidEvent.__proto__ || Object.getPrototypeOf(InvalidEvent)).apply(this, arguments));
+  }
+
+  return InvalidEvent;
+}(Error);
 
 var Event = function () {
   function Event(event) {
@@ -21,6 +38,11 @@ var Event = function () {
     key: 'isPubsubEvent',
     value: function isPubsubEvent() {
       return this.event['@type'] === GOOGLE_PUBSUB_TYPE;
+    }
+  }, {
+    key: 'isPubsubEmulatorEvent',
+    value: function isPubsubEmulatorEvent() {
+      return this.event.eventType === GOOGLE_PUBSUB_EMULATOR_TYPE;
     }
   }, {
     key: 'isHTTPEvent',
@@ -37,8 +59,12 @@ var Event = function () {
     value: function getPayload() {
       if (this.isPubsubEvent()) {
         return this.decodeBase64(this.event.data);
-      } else {
+      } else if (this.isHTTPEvent()) {
         return this.event.body;
+      } else if (this.isPubsubEmulatorEvent()) {
+        return this.event.data;
+      } else {
+        throw new InvalidEvent(JSON.stringify(this.event) + " doesn't appear to be a valid event");
       }
     }
   }, {
