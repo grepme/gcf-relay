@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "compile": "babel 'es6' --out-dir '.' --presets=es2015 --copy-files --ignore 'node_modules'"
+    "compile": "babel 'es6' --out-dir '.' --presets=es2015 --copy-files --ignore 'node_modules'",
+    "coverage": "codecov"
   },
   "author": "@grepme",
   "license": "MIT",
@@ -18,8 +19,13 @@
     "babel-jest": "^21.2.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
+    "codecov": "^2.3.0",
     "jest": "^21.2.1",
     "regenerator-runtime": "^0.11.0",
     "rimraf": "^2.6.2"
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
   }
 }
