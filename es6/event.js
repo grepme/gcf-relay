@@ -1,31 +1,42 @@
-const GOOGLE_PUBSUB_TYPE = 'googleapis.com/google.pubsub.v1.PubsubMessage'
+const GOOGLE_PUBSUB_TYPE = 'type.googleapis.com/google.pubsub.v1.PubsubMessage'
+const GOOGLE_PUBSUB_EMULATOR_TYPE = 'providers/cloud.pubsub/eventTypes/topic.publish'
+
+class InvalidEvent extends Error {}
 
 export default class Event {
-  constructor (event) {
+  constructor(event) {
     this.event = event
   }
 
-  isPubsubEvent () {
+  isPubsubEvent() {
     return this.event['@type'] === GOOGLE_PUBSUB_TYPE
   }
 
-  isHTTPEvent () {
+  isPubsubEmulatorEvent() {
+    return this.event.eventType === GOOGLE_PUBSUB_EMULATOR_TYPE
+  }
+
+  isHTTPEvent() {
     return this.event.is !== undefined && this.event.is('application/json')
   }
 
-  decodeBase64 (data) {
+  decodeBase64(data) {
     return JSON.parse(Buffer.from(data, 'base64').toString())
   }
 
-  getPayload () {
+  getPayload() {
     if (this.isPubsubEvent()) {
       return this.decodeBase64(this.event.data)
-    } else {
+    } else if (this.isHTTPEvent()) {
       return this.event.body
+    } else if (this.isPubsubEmulatorEvent()) {
+      return this.event.data
+    } else {
+      throw new InvalidEvent(JSON.stringify(this.event) + " doesn't appear to be a valid event")
     }
   }
 
-  getRequestOptions (url) {
+  getRequestOptions(url) {
     let options = {
       uri: url,
       method: 'POST',

@@ -15,8 +15,13 @@ const httpEvent = {
 };
 
 const pubsubEvent = {
-  '@type': 'googleapis.com/google.pubsub.v1.PubsubMessage',
+  '@type': 'type.googleapis.com/google.pubsub.v1.PubsubMessage',
   data: Buffer.from(JSON.stringify(data), 'utf8').toString('base64')
+}
+
+const pubsubEmulatorEvent = {
+  eventType: 'providers/cloud.pubsub/eventTypes/topic.publish',
+  data: data
 }
 
 function optionsTest() {
@@ -37,6 +42,10 @@ describe('pubsub event', () => {
 
   test('is not a HTTPEvent', () => {
     expect(event.isHTTPEvent()).toBeFalsy();
+  })
+
+  test('is not a pubsubEmulatorEvent', () => {
+    expect(event.isPubsubEmulatorEvent()).toBeFalsy();
   })
 
   test('decodes the payload', () => {
@@ -61,11 +70,65 @@ describe('HTTP event', () => {
     expect(event.isPubsubEvent()).toBeFalsy();
   })
 
+  test('is not a pubsubEmulatorEvent', () => {
+    expect(event.isPubsubEmulatorEvent()).toBeFalsy();
+  })
+
   test('returns the original data', () => {
     expect(event.getPayload()).toEqual(data)
   })
 
   test('constructs the options for request', () => {
     optionsTest()
+  })
+})
+
+describe('pubsub emulator event', () => {
+  beforeEach(() => {
+    event = new Event(pubsubEmulatorEvent)
+  })
+
+  test('is not a HTTPEvent', () => {
+    expect(event.isHTTPEvent()).toBeFalsy();
+  })
+
+  test('is not a pubsubEvent', () => {
+    expect(event.isPubsubEvent()).toBeFalsy();
+  })
+
+  test('is a pubsubEmulatorEvent', () => {
+    expect(event.isPubsubEmulatorEvent()).toBeTruthy();
+  })
+
+  test('returns the original data', () => {
+    expect(event.getPayload()).toEqual(data)
+  })
+
+  test('constructs the options for request', () => {
+    optionsTest()
+  })
+})
+
+describe('unknown event', () => {
+  beforeEach(() => {
+    event = new Event({})
+  })
+
+  test('is not a HTTPEvent', () => {
+    expect(event.isHTTPEvent()).toBeFalsy();
+  })
+
+  test('is not a pubsubEvent', () => {
+    expect(event.isPubsubEvent()).toBeFalsy();
+  })
+
+  test('is not a pubsubEmulatorEvent', () => {
+    expect(event.isPubsubEmulatorEvent()).toBeFalsy();
+  })
+
+  test('should throw an error when fetching the payload', () => {
+    expect(() => {
+      event.getPayload()
+    }).toThrow();
   })
 })
