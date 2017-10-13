@@ -48,7 +48,7 @@ describe('pubsub event', () => {
   })
 
   test('decodes the payload', () => {
-    expect(event.getPayload()).toEqual(data)
+    expect(event.getData()).toEqual(data)
   })
 
   test('constructs the options for request', () => {
@@ -74,7 +74,7 @@ describe('HTTP event', () => {
   })
 
   test('returns the original data', () => {
-    expect(event.getPayload()).toEqual(data)
+    expect(event.getData()).toEqual(data)
   })
 
   test('constructs the options for request', () => {
@@ -100,7 +100,7 @@ describe('pubsub emulator event', () => {
   })
 
   test('returns the original data', () => {
-    expect(event.getPayload()).toEqual(data)
+    expect(event.getData()).toEqual(data)
   })
 
   test('constructs the options for request', () => {
@@ -127,7 +127,7 @@ describe('unknown event', () => {
 
   test('should throw an error when fetching the payload', () => {
     expect(() => {
-      event.getPayload()
+      event.getData()
     }).toThrow();
   })
 })

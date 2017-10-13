@@ -13,3 +13,8 @@ exports.post = function (url, event) {
   var options = eventObject.getRequestOptions(url);
   return request(options);
 };
+
+exports.getData = function (event) {
+  var eventObject = new _event2.default(event);
+  return event.getData();
+};

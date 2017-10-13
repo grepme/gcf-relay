@@ -6,3 +6,8 @@ exports.post = function (url, event) {
   let options = eventObject.getRequestOptions(url)
   return request(options)
 }
+
+exports.getData = function(event) {
+  let eventObject = new Event(event)
+  return event.getData()
+}

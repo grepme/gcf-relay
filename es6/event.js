@@ -24,7 +24,7 @@ export default class Event {
     return JSON.parse(Buffer.from(data, 'base64').toString())
   }
 
-  getPayload() {
+  getData() {
     if (this.isPubsubEvent()) {
       return this.decodeBase64(this.event.data.data)
     } else if (this.isHTTPEvent()) {
@@ -40,7 +40,7 @@ export default class Event {
     let options = {
       uri: url,
       method: 'POST',
-      json: this.getPayload()
+      json: this.getData()
     }
     return options
   }

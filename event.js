@@ -55,8 +55,8 @@ var Event = function () {
       return JSON.parse(Buffer.from(data, 'base64').toString());
     }
   }, {
-    key: 'getPayload',
-    value: function getPayload() {
+    key: 'getData',
+    value: function getData() {
       if (this.isPubsubEvent()) {
         return this.decodeBase64(this.event.data.data);
       } else if (this.isHTTPEvent()) {
@@ -73,7 +73,7 @@ var Event = function () {
       var options = {
         uri: url,
         method: 'POST',
-        json: this.getPayload()
+        json: this.getData()
       };
       return options;
     }
