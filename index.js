@@ -16,5 +16,5 @@ exports.post = function (url, event) {
 
 exports.getData = function (event) {
   var eventObject = new _event2.default(event);
-  return event.getData();
+  return eventObject.getData();
 };

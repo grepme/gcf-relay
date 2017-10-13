@@ -9,5 +9,5 @@ exports.post = function (url, event) {
 
 exports.getData = function(event) {
   let eventObject = new Event(event)
-  return event.getData()
+  return eventObject.getData()
 }
